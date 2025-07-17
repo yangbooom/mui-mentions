@@ -1,5 +1,5 @@
-import { Box, Portal } from '@mui/material';
 import React, { ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import Mention from './Mention';
 import { BaseSuggestionData, SuggestionDataSource } from './types';
 import { iterateMentionsMarkup } from './utils/utils';
@@ -54,9 +54,9 @@ function Highlighter<T extends BaseSuggestionData>(props: HighlighterProps<T>): 
 
         if (!renderCursor) {
             components.push(
-                <Box key={`${index}-${indexInPlaintext}`} component='span' visibility='hidden'>
+                <span key={`${index}-${indexInPlaintext}`} style={{ visibility: 'hidden' }}>
                     {text}
-                </Box>,
+                </span>,
             );
         } else {
             const splitIndex = selectionStart - indexInPlaintext;
@@ -65,19 +65,19 @@ function Highlighter<T extends BaseSuggestionData>(props: HighlighterProps<T>): 
 
             if (startText) {
                 components.push(
-                    <Box key={`${index}-${indexInPlaintext}-precursor`} component='span' visibility='hidden'>
+                    <span key={`${index}-${indexInPlaintext}-precursor`} style={{ visibility: 'hidden' }}>
                         {startText}
-                    </Box>,
+                    </span>,
                 );
             }
 
-            components.push(<Box key='cursor' ref={cursorRef} component='span' visibility='hidden'></Box>);
+            components.push(<span key='cursor' ref={cursorRef} style={{ visibility: 'hidden' }}></span>);
 
             if (endText) {
                 components.push(
-                    <Box key={`${index}-${indexInPlaintext}-postcursor`} component='span' visibility='hidden'>
+                    <span key={`${index}-${indexInPlaintext}-postcursor`} style={{ visibility: 'hidden' }}>
                         {endText}
-                    </Box>,
+                    </span>,
                 );
             }
         }
@@ -87,28 +87,28 @@ function Highlighter<T extends BaseSuggestionData>(props: HighlighterProps<T>): 
 
     const rect = getHighlighterRect(props.inputRef);
 
-    return (
-        <Portal container={() => props.inputRef?.parentElement || null}>
-            <Box
-                ref={highlighterRef}
-                sx={{
-                    position: 'absolute',
-                    top: `${rect.y}px`,
-                    left: `${rect.x}px`,
-                    width: `${rect.width}px`,
-                    height: `${rect.height}px`,
-                    whiteSpace: multiline ? 'pre-wrap' : 'pre',
-                    overflow: 'hidden',
-                    overscrollBehavior: 'none',
-                    zIndex: -1,
-                }}
-            >
-                {components}
-                <Box component='span' visibility='hidden'>
-                    {' '}
-                </Box>
-            </Box>
-        </Portal>
+    const container = props.inputRef?.parentElement;
+    if (!container) return null;
+    return createPortal(
+        <div
+            ref={highlighterRef}
+            style={{
+                position: 'absolute',
+                top: `${rect.y}px`,
+                left: `${rect.x}px`,
+                width: `${rect.width}px`,
+                height: `${rect.height}px`,
+                whiteSpace: multiline ? 'pre-wrap' : 'pre',
+                overflow: 'hidden',
+                overscrollBehavior: 'none',
+                zIndex: -1,
+            }}
+            className='pointer-events-none'
+        >
+            {components}
+            <span style={{ visibility: 'hidden' }}>{' '}</span>
+        </div>,
+        container,
     );
 }
 

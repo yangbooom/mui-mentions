@@ -1,5 +1,5 @@
-import { CircularProgress, List, Paper, Popper, Stack } from '@mui/material';
 import React, { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import Suggestion from './Suggestion';
 import {
     BaseSuggestionData,
@@ -218,19 +218,39 @@ function SuggestionsOverlay<T extends BaseSuggestionData>(props: SuggestionsOver
                 setFocusIndex={setFocusIndex}
                 setScrollFocusedIntoView={setScrollFocusedIntoView}
             />
-            <Popper open={true} anchorEl={cursorRef.current} placement='bottom-start' sx={{ zIndex: 2 }}>
-                <Paper elevation={8} onMouseDown={onMouseDown}>
-                    <List ref={ulElement} sx={{ width: '300px', maxHeight: '40vh', overflow: 'auto' }}>
-                        {renderedSuggestions.length > 0
-                            ? renderedSuggestions
-                            : loading && (
-                                  <Stack justifyContent='center' alignItems='center' height='40vh'>
-                                      <CircularProgress />
-                                  </Stack>
-                              )}
-                    </List>
-                </Paper>
-            </Popper>
+            {cursorRef.current &&
+                createPortal(
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top:
+                                cursorRef.current.getBoundingClientRect().bottom +
+                                window.scrollY,
+                            left:
+                                cursorRef.current.getBoundingClientRect().left +
+                                window.scrollX,
+                            zIndex: 2,
+                        }}
+                    >
+                        <div
+                            onMouseDown={onMouseDown}
+                            className='border rounded bg-white shadow-lg dark:bg-gray-800 w-72 max-h-40 overflow-auto'
+                        >
+                            <ul ref={ulElement}>
+                                {renderedSuggestions.length > 0 ? (
+                                    renderedSuggestions
+                                ) : (
+                                    loading && (
+                                        <div className='flex justify-center items-center h-40'>
+                                            <div className='h-5 w-5 border-2 border-gray-300 border-t-transparent rounded-full animate-spin'></div>
+                                        </div>
+                                    )
+                                )}
+                            </ul>
+                        </div>
+                    </div>,
+                    document.body,
+                )}
         </>
     );
 }

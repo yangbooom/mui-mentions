@@ -5,6 +5,9 @@
 ![npm-typescript]
 [![License][github-license]][github-license-url]
 
+Example of mention support built with Tailwind CSS and
+shadcn (Radix UI) components.
+
 [Live Demo](https://jackstenglein.github.io/mui-mentions/)
 
 [npm-url]: https://www.npmjs.com/package/@jackstenglein/mui-mentions

@@ -1,5 +1,4 @@
-import { TextField, TextFieldProps, TextFieldVariants } from '@mui/material';
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, { ReactNode, ReactEventHandler, useEffect, useRef, useState } from 'react';
 import Highlighter from './Highlighter';
 import SuggestionsOverlay from './SuggestionsOverlay';
 import {
@@ -53,10 +52,20 @@ interface MentionsTextFieldBaseProps<T extends BaseSuggestionData> {
     highlightColor?: string;
 }
 
-export type MentionsTextFieldProps<
-    T extends BaseSuggestionData,
-    Variant extends TextFieldVariants = TextFieldVariants,
-> = Omit<TextFieldProps<Variant>, 'onChange' | 'defaultValue'> & MentionsTextFieldBaseProps<T>;
+type NativeProps = Omit<
+    React.TextareaHTMLAttributes<HTMLTextAreaElement> &
+        React.InputHTMLAttributes<HTMLInputElement>,
+    'onChange' | 'onSelect' | 'defaultValue' | 'value'
+>;
+
+export type MentionsTextFieldProps<T extends BaseSuggestionData> = NativeProps &
+    MentionsTextFieldBaseProps<T> & {
+        /** Whether to use a textarea instead of an input. */
+        multiline?: boolean;
+
+        /** Callback invoked when text is selected. */
+        onSelect?: ReactEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+    };
 
 function MentionsTextField<T extends BaseSuggestionData>(props: MentionsTextFieldProps<T>): ReactNode {
     const [stateValue, setStateValue] = useState<string>(props.defaultValue || '');
@@ -91,7 +100,14 @@ function MentionsTextField<T extends BaseSuggestionData>(props: MentionsTextFiel
         input.setSelectionRange(selectionStart, selectionEnd);
     }, [selectionStart, selectionEnd, inputRef]);
 
-    const { value, defaultValue: _defaultValue, dataSources, highlightColor, ...others } = props;
+    const {
+        value,
+        defaultValue: _defaultValue,
+        dataSources,
+        highlightColor,
+        multiline,
+        ...others
+    } = props;
     const finalValue = value !== undefined ? value : stateValue;
 
     const handleBlur = () => {
@@ -143,7 +159,9 @@ function MentionsTextField<T extends BaseSuggestionData>(props: MentionsTextFiel
         onAdd?.(suggestion, start, end);
     };
 
-    const handleChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (
+        ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ) => {
         let newPlainTextValue = ev.target.value;
 
         let selectionStartBefore = selectionStart;
@@ -164,7 +182,7 @@ function MentionsTextField<T extends BaseSuggestionData>(props: MentionsTextFiel
             selectionEndBefore,
             ev.target.selectionEnd || 0,
             dataSources,
-            props.multiline,
+            multiline,
         );
 
         // In case a mention is deleted, also adjust the new plain text value
@@ -194,21 +212,27 @@ function MentionsTextField<T extends BaseSuggestionData>(props: MentionsTextFiel
         onChange(newValue, newPlainTextValue, mentions);
     };
 
-    const handleSelect = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSelect = (
+        ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ) => {
         setSelectionStart(ev.target.selectionStart);
         setSelectionEnd(ev.target.selectionEnd);
         props.onSelect?.(ev);
     };
 
-    const inputProps: TextFieldProps = {
+    const inputProps: NativeProps & {
+        ref?: any;
+        value: string;
+        onChange: any;
+        onSelect: any;
+    } = {
         ...others,
-        value: getPlainText(finalValue, dataSources, props.multiline),
+        value: getPlainText(finalValue, dataSources, multiline),
         onChange: handleChange,
         onSelect: handleSelect,
         onBlur: handleBlur,
-        inputProps: {
-            sx: { overscrollBehavior: 'none' },
-        },
+        ref: (ref: any) => setInputRef(ref),
+        className: `${(others as any).className || ''}`,
     };
 
     return (
@@ -221,10 +245,10 @@ function MentionsTextField<T extends BaseSuggestionData>(props: MentionsTextFiel
                 value={finalValue}
                 dataSources={dataSources}
                 inputRef={inputRef}
-                multiline={inputProps.multiline}
+                multiline={multiline}
                 color={highlightColor || props.color}
             />
-            <TextField inputRef={(ref) => setInputRef(ref)} {...inputProps} />
+            {React.createElement(multiline ? 'textarea' : 'input', inputProps as any)}
             <SuggestionsOverlay
                 value={finalValue}
                 dataSources={dataSources}
