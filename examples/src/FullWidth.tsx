@@ -1,7 +1,7 @@
-import { Stack, Typography } from '@mui/material';
 import React from 'react';
 import { MentionsTextField } from '../../src';
 import { defaultValue, stormlight } from './data';
+import { Stack, Typography } from './ui';
 
 export const FullWidth = () => {
     return (

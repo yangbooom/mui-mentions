@@ -1,7 +1,7 @@
-import { Stack, Typography } from '@mui/material';
 import React from 'react';
 import { MentionsTextField } from '../../src';
 import { stormlight } from './data';
+import { Stack, Typography } from './ui';
 
 export const AppendSpaceOnAdd = () => {
     return (

@@ -1,4 +1,3 @@
-import { ListItemButton } from '@mui/material';
 import React, { ReactNode } from 'react';
 import { BaseSuggestionData, DefaultDisplayTransform, SuggestionData } from './types';
 
@@ -37,15 +36,15 @@ function Suggestion<T extends BaseSuggestionData>(props: SuggestionProps<T>): Re
 
     const display = DefaultDisplayTransform(suggestion.id, suggestion.display);
     return (
-        <ListItemButton
+        <div
             role='option'
             aria-selected={focused}
-            selected={focused}
             onClick={onClick}
             onMouseEnter={onMouseEnter}
+            className={`px-2 py-1 cursor-pointer ${focused ? 'bg-gray-200' : ''}`}
         >
             {display}
-        </ListItemButton>
+        </div>
     );
 }
 

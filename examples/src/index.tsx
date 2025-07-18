@@ -1,14 +1,3 @@
-import {
-    Container,
-    CssBaseline,
-    FormControlLabel,
-    Link,
-    Stack,
-    Switch,
-    ThemeProvider,
-    Typography,
-    createTheme,
-} from '@mui/material';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Adornment } from './Adornment';
@@ -26,48 +15,30 @@ import { Multiline } from './Multiline';
 import { MultipleDataSources } from './MultipleDataSources';
 import { Sizes } from './Sizes';
 import { Trigger } from './Trigger';
-
-const darkTheme = createTheme({
-    palette: {
-        mode: 'dark',
-    },
-});
-
-const lightTheme = createTheme();
+import { Container, FormControlLabel, Link, Stack, Switch, Typography } from './ui';
 
 const App = () => {
-    const [mode, setMode] = useState('dark');
-
+    const [dark, setDark] = useState(true);
     return (
-        <ThemeProvider theme={mode === 'dark' ? darkTheme : lightTheme}>
-            <CssBaseline />
-            <Container sx={{ py: 5 }}>
+        <div className={dark ? 'dark' : ''}>
+            <Container className='py-5'>
                 <Stack spacing={5}>
                     <Stack spacing={1}>
                         <Typography variant='h4'>@jackstenglein/mui-mentions</Typography>
                         <Typography>
-                            Mention people in a{' '}
-                            <Link href='https://mui.com/material-ui/react-text-field/'>MUI TextField</Link>.
+                            Mention people in a <Link href='https://tailwindcss.com/'>Tailwind input</Link>.
                         </Typography>
-
                         <FormControlLabel
-                            control={
-                                <Switch
-                                    checked={mode === 'dark'}
-                                    onChange={(e) => setMode(e.target.checked ? 'dark' : 'light')}
-                                />
-                            }
+                            control={<Switch checked={dark} onChange={(e) => setDark(e.target.checked)} />}
                             label='Dark Mode'
                         />
                     </Stack>
-
                     <Basic />
                     <Trigger />
                     <MultipleDataSources />
                     <AppendSpaceOnAdd />
                     <DisplayTransform />
                     <AsychronousData />
-
                     <FormProps />
                     <Error />
                     <Multiline />
@@ -76,11 +47,10 @@ const App = () => {
                     <FullWidth />
                     <Controlled />
                     <Color />
-
                     <Limitations />
                 </Stack>
             </Container>
-        </ThemeProvider>
+        </div>
     );
 };
 

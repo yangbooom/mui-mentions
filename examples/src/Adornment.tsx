@@ -1,8 +1,7 @@
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import { InputAdornment, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { MentionsTextField } from '../../src';
 import { defaultValue, stormlight, variants } from './data';
+import AccountCircle, { InputAdornment, Stack, Typography } from './ui';
 
 export const Adornment = () => {
     return (
