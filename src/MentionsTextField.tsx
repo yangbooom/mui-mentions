@@ -1,4 +1,4 @@
-import React, { ReactNode, ReactEventHandler, useEffect, useRef, useState } from 'react';
+import React, { ReactEventHandler, ReactNode, useEffect, useRef, useState } from 'react';
 import Highlighter from './Highlighter';
 import SuggestionsOverlay from './SuggestionsOverlay';
 import {
@@ -53,8 +53,7 @@ interface MentionsTextFieldBaseProps<T extends BaseSuggestionData> {
 }
 
 type NativeProps = Omit<
-    React.TextareaHTMLAttributes<HTMLTextAreaElement> &
-        React.InputHTMLAttributes<HTMLInputElement>,
+    React.TextareaHTMLAttributes<HTMLTextAreaElement> & React.InputHTMLAttributes<HTMLInputElement>,
     'onChange' | 'onSelect' | 'defaultValue' | 'value'
 >;
 
@@ -100,14 +99,7 @@ function MentionsTextField<T extends BaseSuggestionData>(props: MentionsTextFiel
         input.setSelectionRange(selectionStart, selectionEnd);
     }, [selectionStart, selectionEnd, inputRef]);
 
-    const {
-        value,
-        defaultValue: _defaultValue,
-        dataSources,
-        highlightColor,
-        multiline,
-        ...others
-    } = props;
+    const { value, defaultValue: _defaultValue, dataSources, highlightColor, multiline, ...others } = props;
     const finalValue = value !== undefined ? value : stateValue;
 
     const handleBlur = () => {
@@ -159,9 +151,7 @@ function MentionsTextField<T extends BaseSuggestionData>(props: MentionsTextFiel
         onAdd?.(suggestion, start, end);
     };
 
-    const handleChange = (
-        ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    ) => {
+    const handleChange = (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         let newPlainTextValue = ev.target.value;
 
         let selectionStartBefore = selectionStart;
@@ -212,9 +202,7 @@ function MentionsTextField<T extends BaseSuggestionData>(props: MentionsTextFiel
         onChange(newValue, newPlainTextValue, mentions);
     };
 
-    const handleSelect = (
-        ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    ) => {
+    const handleSelect = (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setSelectionStart(ev.target.selectionStart);
         setSelectionEnd(ev.target.selectionEnd);
         props.onSelect?.(ev);

@@ -106,7 +106,7 @@ function Highlighter<T extends BaseSuggestionData>(props: HighlighterProps<T>): 
             className='pointer-events-none'
         >
             {components}
-            <span style={{ visibility: 'hidden' }}>{' '}</span>
+            <span style={{ visibility: 'hidden' }}> </span>
         </div>,
         container,
     );

@@ -223,12 +223,8 @@ function SuggestionsOverlay<T extends BaseSuggestionData>(props: SuggestionsOver
                     <div
                         style={{
                             position: 'absolute',
-                            top:
-                                cursorRef.current.getBoundingClientRect().bottom +
-                                window.scrollY,
-                            left:
-                                cursorRef.current.getBoundingClientRect().left +
-                                window.scrollX,
+                            top: cursorRef.current.getBoundingClientRect().bottom + window.scrollY,
+                            left: cursorRef.current.getBoundingClientRect().left + window.scrollX,
                             zIndex: 2,
                         }}
                     >
@@ -237,15 +233,13 @@ function SuggestionsOverlay<T extends BaseSuggestionData>(props: SuggestionsOver
                             className='border rounded bg-white shadow-lg dark:bg-gray-800 w-72 max-h-40 overflow-auto'
                         >
                             <ul ref={ulElement}>
-                                {renderedSuggestions.length > 0 ? (
-                                    renderedSuggestions
-                                ) : (
-                                    loading && (
-                                        <div className='flex justify-center items-center h-40'>
-                                            <div className='h-5 w-5 border-2 border-gray-300 border-t-transparent rounded-full animate-spin'></div>
-                                        </div>
-                                    )
-                                )}
+                                {renderedSuggestions.length > 0
+                                    ? renderedSuggestions
+                                    : loading && (
+                                          <div className='flex justify-center items-center h-40'>
+                                              <div className='h-5 w-5 border-2 border-gray-300 border-t-transparent rounded-full animate-spin'></div>
+                                          </div>
+                                      )}
                             </ul>
                         </div>
                     </div>,

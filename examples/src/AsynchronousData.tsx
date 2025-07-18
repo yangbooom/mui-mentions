@@ -1,7 +1,7 @@
-import { Stack, Typography } from '@mui/material';
 import React from 'react';
 import { BaseSuggestionData, MentionsTextField } from '../../src';
 import { stormlight } from './data';
+import { Stack, Typography } from './ui';
 
 function simulateDelay(query: string): Promise<BaseSuggestionData[]> {
     return new Promise((resolve) => {
